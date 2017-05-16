@@ -45,10 +45,13 @@ db.once('open', function() {
             defSettings.save(function(err) {
                 if (err) return handleError(err);
                 console.log('Default settings created.');
+                getSpeed();
             });
+        } else {
+            getSpeed();
         }
     });
-    getSpeed();
+
 });
 
 app.engine('handlebars', handlebars.engine);
