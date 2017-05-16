@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Settings</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            Get internet speed every <select id="intervalSelect">
+              <option value="5">5</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
+              <option value="60">60</option>
+            </select> minutes.
+        </div>
+        <div class="col-xs-12">
+            <button class="btn btn-primary pull-right save" data-loading-text="Saving...">
+            Save
+          </button>
+        </div>
+    </div>
+</div>
+<input type="hidden" value="{{interval}}" class="interval">
+<script type="text/javascript">
+    var interval = $('.interval').val();
+    $('#intervalSelect').val(interval);
+    $('.save').on('click', function(e) {
+        var btn = $(e.currentTarget);
+        btn.button('loading');
+        var interval = parseInt($('#intervalSelect').val(), 10);
+        var data = {
+            "interval": interval
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/ajax/saveSettings',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function(data) {
+                if (!data.error) {
+                    btn.button('reset');
+                    $('#success').fadeIn();
+                    setTimeout(function() {
+                        $('#success').fadeOut();
+                    }, 1500);
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,35 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+        </div>
+        <h2>Internet Speed Log:</h2>
+        {{#if logs}}
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        Ping
+                    </th>
+                    <th>
+                        Download
+                    </th>
+                    <th>
+                        Upload
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                </tr>
+                {{#each logs}}
+                    <tr>
+                        <td>{{ping}}</td>
+                        <td>{{download}} Mb/s</td>
+                        <td>{{upload}} Mb/s</td>
+                        <td>{{prettyDate date}}</td>
+                    </tr>
+                {{/each}}
+            </table>
+        {{else}}
+            <p>There are no meassures yet. Please come back in a while.</p>
+        {{/if}}
+    </div>
+</div>

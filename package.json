@@ -1,0 +1,21 @@
+{
+  "name": "speed-logger",
+  "version": "1.0.0",
+  "description": "Node js app for raspberry pi for monitoring your internet speed",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mauricio Pacheco",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "express3-handlebars": "^0.5.2",
+    "moment": "^2.18.1",
+    "mongodb": "^2.2.26",
+    "mongoose": "^4.9.9",
+    "speed-test": "^1.8.0"
+  },
+  "devDependencies": {}
+}
