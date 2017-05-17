@@ -2,9 +2,9 @@
 Node js app for raspberry pi for monitoring your internet speed
 
 ## prerequisites
-* Nodejs
-* Npm
-* MongoDB
+You should have this installed on your system.
+* Nodejs (https://nodejs.org/en/download/package-manager/)
+* MongoDB (https://docs.mongodb.com/manual/administration/install-community/)
 
 
 ## Installation
