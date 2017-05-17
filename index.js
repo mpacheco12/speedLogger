@@ -87,7 +87,9 @@ app.post('/ajax/saveSettings', function(req, res) {
                 });
                 return handleError(err);
             }
-            clearTimeout(timeout);
+            if (timeout) {
+                clearTimeout(timeout);
+            }
             getSpeed();
             res.send(updatedDoc);
         });
