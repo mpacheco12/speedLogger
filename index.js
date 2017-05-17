@@ -1,9 +1,12 @@
 var express = require('express');
 var app = express(); //use express js module
-var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var speedTest = require("speedtest-net");
 var moment = require("moment");
+var database = require("./db.js");
+var Settings = database.Settings;
+var Logs = database.Logs;
+var db = database.db;
 //add handlebars view engine
 var handlebars = require('express3-handlebars')
     .create({
@@ -14,33 +17,14 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-var url = 'mongodb://localhost/speedLogger';
-mongoose.connect(url);
-var db = mongoose.connection;
-var SettingsSchema = mongoose.Schema({
-    interval: {
-        type: Number,
-        min: 5
-    }
-});
-var Settings = mongoose.model('Settings', SettingsSchema);
-var LogsSchema = mongoose.Schema({
-    date: {
-        type: Date,
-        default: Date.now
-    },
-    ping: Number,
-    download: Number,
-    upload: Number,
-});
-var Logs = mongoose.model('Logs', LogsSchema);
+
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
 
     Settings.count({}, function(err, count) {
         if (count == 0) {
             var defSettings = new Settings({
-                interval: 5
+                interval: 60
             });
             defSettings.save(function(err) {
                 if (err) return handleError(err);
@@ -61,7 +45,7 @@ app.use(express.static(__dirname + '/public'));
 app.set('port', process.env.PORT || 3000); //sets port 3000
 
 app.get('/', function(req, res) {
-    Logs.find({}).limit(20).sort({
+    Logs.find({}).limit(40).sort({
         date: -1
     }).exec(function(err, docs) {
         res.render('home', {
@@ -70,6 +54,9 @@ app.get('/', function(req, res) {
                 prettyDate: function(date) {
                     date = moment(date).format("DD/MM/YY hh:mm:ss a");
                     return date;
+                },
+                json: function() {
+                    return JSON.stringify(docs);
                 }
             }
         });
