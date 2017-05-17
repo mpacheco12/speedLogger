@@ -1,11 +1,11 @@
-# speedLogger
+## speedLogger
 Node js app for raspberry pi for monitoring your internet speed
 
 ## prerequisites
 * Nodejs
 * Npm
 * MongoDB
-* forever
+
 
 ## Installation
 ```bash
@@ -16,5 +16,5 @@ npm install
 
 ## Running
 ```bash
-forever index.js
+node index.js
 ```
