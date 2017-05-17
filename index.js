@@ -28,7 +28,6 @@ db.once('open', function() {
             });
             defSettings.save(function(err) {
                 if (err) return handleError(err);
-                console.log('Default settings created.');
                 getSpeed();
             });
         } else {
@@ -111,7 +110,6 @@ var timeout = null;
 function getSpeed() {
     Settings.findOne({}, function(err, doc) {
         var intervalTime = doc.interval * 1000 * 60;
-        console.log('setting interval every ' + intervalTime + ' seconds.');
         speed = speedTest({
             maxTime: 20000
         });
@@ -123,7 +121,6 @@ function getSpeed() {
             });
             log.save(function(err) {
                 if (err) return handleError(err);
-                console.log('Log saved.');
             });
         });
         speed.on('error', function(err) {
