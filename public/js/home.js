@@ -12,8 +12,8 @@ $(function() {
         data.reverse();
         drawChart(data);
     });
-
-    var socket = io.connect('http://localhost:4200');
+    var url = document.location.hostname;
+    var socket = io.connect('http://' + url + ':4200');
     socket.on('connect', function(data) {});
     socket.on('newMeasurre', function(newData) {
         data.push(newData);
