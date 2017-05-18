@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+mongoose.Promise = global.Promise;
 var url = 'mongodb://localhost/speedLogger';
 mongoose.connect(url);
 var db = mongoose.connection;

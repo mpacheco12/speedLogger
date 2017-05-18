@@ -3,6 +3,8 @@ var app = express(); //use express js module
 var bodyParser = require('body-parser');
 var speedTest = require("speedtest-net");
 var moment = require("moment");
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 var database = require("./db.js");
 var Settings = database.Settings;
 var Logs = database.Logs;
@@ -106,7 +108,20 @@ app.listen(app.get('port'), function() { //start express server
     console.log('Express Server Started on http://localhost:3000');
 });
 
+server.listen(4200);
+var clients = {}
+io.on('connection', function(client) {
+    clients[client.id] = client;
+    client.on('disconnect', function() {
+        delete clients[client.id];
+    });
+});
 
+function broadCast(logData) {
+    for (i in clients) {
+        clients[i].emit('newMeasurre', logData);
+    }
+}
 var timeout = null;
 
 function getSpeed() {
@@ -116,11 +131,14 @@ function getSpeed() {
             maxTime: 20000
         });
         speed.on('data', function(data) {
-            var log = new Logs({
+            var logData = {
                 ping: data.server.ping,
                 download: data.speeds.download,
                 upload: data.speeds.upload
-            });
+            };
+            var log = new Logs(logData);
+            logData.date = new Date();
+            broadCast(logData);
             log.save(function(err) {
                 if (err) return handleError(err);
             });

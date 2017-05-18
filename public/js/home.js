@@ -1,21 +1,43 @@
+var data = {};
 $(function() {
 
 
     google.charts.load('current', {
         'packages': ['corechart']
     });
-    google.charts.setOnLoadCallback(drawChart);
+    google.charts.setOnLoadCallback(function() {
+        if ($('.data').val()) {
+            data = JSON.parse($('.data').val());
+        }
+        data.reverse();
+        drawChart(data);
+    });
 
+    var socket = io.connect('http://localhost:4200');
+    socket.on('connect', function(data) {});
+    socket.on('newMeasurre', function(newData) {
+        data.push(newData);
+        if (data.length > 40) {
+            data.shift();
+            $('#speedResult > tbody >tr').last().remove()
+        }
+        drawChart(data);
+        var newRow = createRow(newData);
+        $(newRow).prependTo("#speedResult > tbody");
 
+    });
 
 });
 
-function drawChart() {
-    var data = {};
-    if ($('.data').val()) {
-        data = JSON.parse($('.data').val());
-    }
-    data.reverse();
+function createRow(newData) {
+    ret = "<tr><td>" + newData['ping'] + "</td><td>" + newData['download'] +
+        "</td><td>" + newData['upload'] + "</td><td>" +
+        moment(newData['date']).format("DD/MM/YY hh:mm:ss a") + "</td></tr>";
+    return ret;
+}
+
+function drawChart(data) {
+
     var plotData = [
         ['Time', 'Download Speed', 'Upload Speed', 'Av. Download Speed']
     ];
@@ -36,11 +58,6 @@ function drawChart() {
         curveType: 'function',
         legend: {
             position: 'top'
-        },
-        animation: {
-            ease: 'in',
-            startup: true,
-            duration: 500
         },
         chartArea: {
             'width': '90%',
