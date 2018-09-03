@@ -74,6 +74,18 @@ app.get('/ajax/getSettings',function(req,res){
         res.send(doc);
     });
 });
+app.get('/ajax/testSpeed',function(req,res){
+    Settings.findOne({}, function(err, doc) {
+        if(doc.status!="waiting"){
+            res.send('already testing');
+            return;
+        }
+        getSpeed();
+        res.send('ok');
+        return;
+    });
+});
+
 
 app.post('/ajax/saveSettings', function(req, res) {
     data = req.body;

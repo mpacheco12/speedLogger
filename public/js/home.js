@@ -34,14 +34,24 @@ $(function() {
             changeStatus(data.status)
         }
     });
-
+    $('.test-now').on('click', function(e) {
+       $.ajax({
+            type: 'GET',
+            url: '/ajax/testSpeed',
+            contentType: 'application/json',
+            success:function(data){
+            }
+        });
+    });
 });
 
 function changeStatus(status){
     if(status == "measuring"){
         $('.status').show();
+        $('.test-now').hide();
     }else{
         $('.status').hide();
+        $('.test-now').show();
     }
 }
 
