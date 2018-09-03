@@ -67,8 +67,14 @@ app.get('/settings', function(req, res) {
     Settings.findOne({}, function(err, doc) {
         res.render('settings', doc);
     });
-
 });
+
+app.get('/ajax/getSettings',function(req,res){
+    Settings.findOne({}, function(err, doc) {
+        res.send(doc);
+    });
+});
+
 app.post('/ajax/saveSettings', function(req, res) {
     data = req.body;
     Settings.findOne({}, function(err, doc) {
@@ -105,7 +111,7 @@ app.use(function(req, res) { //express catch middleware if page doesn't exist
 });
 
 app.listen(app.get('port'), function() { //start express server
-    console.log('Express Server Started on http://localhost:3000');
+    console.log('Express Server Started on http://localhost:'+app.get('port'));
 });
 
 server.listen(4200);
@@ -117,35 +123,57 @@ io.on('connection', function(client) {
     });
 });
 
-function broadCast(logData) {
+function changeGlobalStatus(status){
+    Settings.findOne({}, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return err;
+        }
+        doc.status = status;
+        doc.save(function(err, updatedDoc) {
+            if (err) {
+                console.log(err);
+                return err;
+            }
+            broadCast('status',status);
+            return;
+        });
+    });
+}
+function broadCast(event,logData) {
     for (i in clients) {
-        clients[i].emit('newMeasurre', logData);
+        clients[i].emit(event, logData);
     }
 }
 var timeout = null;
 
 function getSpeed() {
-    Settings.findOne({}, function(err, doc) {
-        var intervalTime = doc.interval * 1000 * 60;
-        speed = speedTest({
-            maxTime: 20000
-        });
-        speed.on('data', function(data) {
-            var logData = {
-                ping: data.server.ping,
-                download: data.speeds.download,
-                upload: data.speeds.upload
-            };
-            var log = new Logs(logData);
-            logData.date = new Date();
-            broadCast(logData);
-            log.save(function(err) {
-                if (err) return handleError(err);
+    changeGlobalStatus('measuring');
+    return new Promise(resolve => {
+        Settings.findOne({}, function(err, doc) {
+            var intervalTime = doc.interval * 1000 * 60;
+            speed = speedTest({
+                maxTime: 20000
             });
+            speed.on('data', function(data) {
+                var logData = {
+                    ping: data.server.ping,
+                    download: data.speeds.download,
+                    upload: data.speeds.upload
+                };
+                var log = new Logs(logData);
+                logData.date = new Date();
+                broadCast('newMeasurre',logData);
+                log.save(function(err) {
+                    if (err) return handleError(err);
+                });
+                changeGlobalStatus('waiting');         
+            });
+            speed.on('error', function(err) {
+                console.log(err);
+            });
+            timeout = setTimeout(getSpeed, intervalTime);
+            resolve('ok');
         });
-        speed.on('error', function(err) {
-            console.log(err);
-        });
-        timeout = setTimeout(getSpeed, intervalTime);
-    });
+     });
 }

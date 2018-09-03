@@ -7,7 +7,8 @@ var SettingsSchema = mongoose.Schema({
     interval: {
         type: Number,
         min: 5
-    }
+    },
+    status: String
 });
 var Settings = mongoose.model('Settings', SettingsSchema);
 var LogsSchema = mongoose.Schema({

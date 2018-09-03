@@ -1,7 +1,5 @@
-var data = {};
+var data = [];
 $(function() {
-
-
     google.charts.load('current', {
         'packages': ['corechart']
     });
@@ -24,14 +22,32 @@ $(function() {
         drawChart(data);
         var newRow = createRow(newData);
         $(newRow).prependTo("#speedResult > tbody");
-
+    });
+    socket.on('status',function(newStatus){
+        changeStatus(newStatus)
+    });
+    $.ajax({
+        type: 'GET',
+        url: '/ajax/getSettings',
+        contentType: 'application/json',
+        success: function(data) {
+            changeStatus(data.status)
+        }
     });
 
 });
 
+function changeStatus(status){
+    if(status == "measuring"){
+        $('.status').show();
+    }else{
+        $('.status').hide();
+    }
+}
+
 function createRow(newData) {
     ret = "<tr><td>" + newData['ping'] + "</td><td>" + newData['download'] +
-        "</td><td>" + newData['upload'] + "</td><td>" +
+        " Mb/s</td><td>" + newData['upload'] + " Mb/s</td><td>" +
         moment(newData['date']).format("DD/MM/YY hh:mm:ss a") + "</td></tr>";
     return ret;
 }

@@ -1,8 +1,12 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
+        <div class="status">
+            <i class="fa fa-spinner fa-spin" aria-hidden="true"></i> Testing speed ...
         </div>
-        <h2>Internet Speed Log:</h2> {{#if logs}}
+        </div>
+        <h2>Internet Speed Log:</h2> 
+        {{#if logs}}
         <div class="row">
             <div class="col-xs-12">
                 <div class="tableHolder">
@@ -45,6 +49,7 @@
         <textarea class="data" rows="8" cols="80" style="display:none">{{json}}</textarea> {{else}}
         <p>There are no meassures yet. Please come back in a while.</p>
         {{/if}}
+
     </div>
 </div>
 <script src="/js/socketio.js"></script>
