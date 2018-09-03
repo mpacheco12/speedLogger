@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Mauricio Pacheco",
-  "license": "ISC",
+  "license": "MIT",
   "repository":"https://github.com/mpacheco12/speedLogger",
   "dependencies": {
     "body-parser": "^1.17.1",
