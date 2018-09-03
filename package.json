@@ -8,10 +8,11 @@
   },
   "author": "Mauricio Pacheco",
   "license": "ISC",
+  "repository":"https://github.com/mpacheco12/speedLogger",
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
-    "express3-handlebars": "^0.5.2",
+    "express-handlebars": "^3.0.0",
     "moment": "^2.18.1",
     "mongodb": "^2.2.26",
     "mongoose": "^4.9.9",
